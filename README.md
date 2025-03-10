@@ -32,45 +32,47 @@
 - 예약 수정
 
 ## 프로젝트 구조
+```plaintext
 src/
 ├── main/
-│   ├── java/
-│   │   └── com/
-│   │       └── customer/
-│   │           ├── constants/
-│   │           │   └── CleaningStatus.java
-│   │           ├── database/
-│   │           │   └── DatabaseManager.java
-│   │           ├── servlets/
-│   │           │   ├── AdminCheckServlet.java
-│   │           │   ├── CheckEmailServlet.java
-│   │           │   ├── CheckUsernameServlet.java
-│   │           │   ├── CustomerManagementServlet.java
-│   │           │   ├── CustomerReservationServlet.java
-│   │           │   ├── DashboardServlet.java
-│   │           │   ├── LoginServlet.java
-│   │           │   ├── LogoutServlet.java
-│   │           │   ├── MainServlet.java
-│   │           │   ├── ReservationServlet.java
-│   │           │   ├── RoomDetailServlet.java
-│   │           │   ├── RoomManagementServlet.java
-│   │           │   ├── RoomOccupiedServlet.java
-│   │           │   ├── SessionCheckServlet.java
-│   │           │   └── SignupServlet.java
-│   │           └── Main.java
-│   └── resources/
-│       ├── html/
-│       │   ├── components/
-│       │   │   ├── roomDetail.html
-│       │   │   └── sidebar.html
-│       │   ├── dashboard.html
-│       │   ├── index.html
-│       │   ├── login.html
-│       │   └── signup.html
-│       ├── static/
-│           ├── css/
-│           ├── js/
-│           └── images/
+│ ├── java/
+│ │ └── com/
+│ │ └── customer/
+│ │ ├── constants/
+│ │ │ └── CleaningStatus.java
+│ │ ├── database/
+│ │ │ └── DatabaseManager.java
+│ │ ├── servlets/
+│ │ │ ├── AdminCheckServlet.java
+│ │ │ ├── CheckEmailServlet.java
+│ │ │ ├── CheckUsernameServlet.java
+│ │ │ ├── CustomerManagementServlet.java
+│ │ │ ├── CustomerReservationServlet.java
+│ │ │ ├── DashboardServlet.java
+│ │ │ ├── LoginServlet.java
+│ │ │ ├── LogoutServlet.java
+│ │ │ ├── MainServlet.java
+│ │ │ ├── ReservationServlet.java
+│ │ │ ├── RoomDetailServlet.java
+│ │ │ ├── RoomManagementServlet.java
+│ │ │ ├── RoomOccupiedServlet.java
+│ │ │ ├── SessionCheckServlet.java
+│ │ │ └── SignupServlet.java
+│ │ └── Main.java
+│ └── resources/
+│ ├── html/
+│ │ ├── components/
+│ │ │ ├── roomDetail.html
+│ │ │ └── sidebar.html
+│ │ ├── dashboard.html
+│ │ ├── index.html
+│ │ ├── login.html
+│ │ └── signup.html
+│ ├── static/
+│ ├── css/
+│ ├── js/
+│ └── images/
+```
 
 ### 설치 및 실행 방법
 
