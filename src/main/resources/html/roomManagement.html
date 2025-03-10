@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>객실 관리</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="/static/css/roomManagement.css" rel="stylesheet">
+</head>
+
+<body>
+  <!-- 사이드바가 로드될 컨테이너 -->
+  <div id="sidebarContainer"></div>
+
+  <!-- 전체 컨텐츠를 감싸는 wrapper -->
+  <div class="page-wrapper">
+    <!-- 메인 컨텐츠 -->
+    <div class="main-content">
+      <div class="container-fluid">
+        <!-- 대시보드 섹션의 row에 새로운 카드 추가 -->
+        <div class="row mb-4">
+          <!-- 전체 현황 카드 -->
+          <div class="col-md-2">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">전체 객실</h5>
+                <h2 class="card-text" id="totalRooms">0</h2>
+              </div>
+            </div>
+          </div>
+          <!-- 이용 가능 객실 -->
+          <div class="col-md-2">
+            <div class="card bg-success text-white">
+              <div class="card-body">
+                <h5 class="card-title">이용 가능</h5>
+                <h2 class="card-text" id="availableRooms">0</h2>
+              </div>
+            </div>
+          </div>
+          <!-- 사용 중인 객실 -->
+          <div class="col-md-2">
+            <div class="card bg-danger text-white">
+              <div class="card-body">
+                <h5 class="card-title">사용 중</h5>
+                <h2 class="card-text" id="occupiedRooms">0</h2>
+              </div>
+            </div>
+          </div>
+          <!-- 점검 중인 객실 -->
+          <div class="col-md-2">
+            <div class="card bg-warning">
+              <div class="card-body">
+                <h5 class="card-title">점검 중</h5>
+                <h2 class="card-text" id="maintenanceRooms">0</h2>
+              </div>
+            </div>
+          </div>
+          <!-- 예약됨 객실 -->
+          <div class="col-md-2">
+            <div class="card bg-info text-white">
+              <div class="card-body">
+                <h5 class="card-title">예약됨</h5>
+                <h2 class="card-text" id="reservedRooms">0</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 차트 섹션 -->
+        <div class="row mb-4">
+          <!-- 객실 상태 파이 차트 -->
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">객실 상태 현황</h5>
+                <canvas id="statusChart"></canvas>
+              </div>
+            </div>
+          </div>
+          <!-- 객실 타입별 현황 차트 -->
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">객실 타입별 현황</h5>
+                <canvas id="typeChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h2 class="mb-4">객실 관리
+          <button class="btn btn-primary float-end" onclick="showAddModal()">
+            <i class="fas fa-plus"></i> 객실 추가
+          </button>
+        </h2>
+
+        <!-- 여기에 검색창 추가 -->
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="fas fa-search"></i>
+              </span>
+              <input type="text" class="form-control" id="roomSearch" placeholder="객실 번호 검색..." onkeyup="searchRooms()">
+              <button class="btn btn-outline-secondary" type="button" onclick="clearSearch()">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover room-table">
+            <thead class="table-dark">
+              <tr>
+                <th>객실 번호</th>
+                <th>객실 타입</th>
+                <th>상태</th>
+                <th>청소 상태</th>
+                <th>마지막 청소</th>
+                <th>관리</th>
+              </tr>
+            </thead>
+            <tbody id="roomTableBody">
+              <!-- JavaScript로 동적 생성 -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 청소 현황 카드를 여기로 이동 -->
+        <div class="row mt-4">
+          <div class="col-md-3">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">청소 현황</h5>
+                <div class="list-group">
+                  <div class="list-group-item d-flex justify-content-between align-items-center">
+                    청소 완료
+                    <span class="badge bg-success rounded-pill" id="cleanCount">0</span>
+                  </div>
+                  <div class="list-group-item d-flex justify-content-between align-items-center">
+                    청소 필요
+                    <span class="badge bg-danger rounded-pill" id="dirtyCount">0</span>
+                  </div>
+                  <div class="list-group-item d-flex justify-content-between align-items-center">
+                    청소 중
+                    <span class="badge bg-warning rounded-pill" id="cleaningCount">0</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 객실 추가/수정 모달 -->
+  <div class="modal fade" id="roomModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalTitle">객실 추가</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="roomForm">
+            <div class="mb-3">
+              <label class="form-label">객실 번호</label>
+              <input type="text" class="form-control" id="roomNumber" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">객실 타입</label>
+              <select class="form-select" id="roomType" required>
+                <option value="VIP">VIP</option>
+                <option value="SUITE">SUITE</option>
+                <option value="BUSINESS">BUSINESS</option>
+                <option value="NORMAL">NORMAL</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">객실 상태</label>
+              <select class="form-select" id="roomStatus" required>
+                <option value="available">이용 가능</option>
+                <option value="occupied">사용 중</option>
+                <option value="maintenance">점검 중</option>
+                <option value="reserved">예약됨</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">청소 상태</label>
+              <select class="form-select" id="cleaningStatus" required>
+                <option value="clean">청소 완료</option>
+                <option value="dirty">청소 필요</option>
+                <option value="cleaning">청소 중</option>
+                <option value="inspection">점검 필요</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">마지막 청소 시간</label>
+              <input type="datetime-local" class="form-control" id="lastCleaned" readonly>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+          <button type="button" class="btn btn-primary" id="saveButton">저장</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/static/js/roomManagement.js"></script>
+</body>
+
+</html>

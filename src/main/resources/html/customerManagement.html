@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>고객 관리</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="/static/css/customerManagement.css" rel="stylesheet">
+</head>
+
+<body>
+  <!-- 사이드바가 로드될 컨테이너 -->
+  <div id="sidebarContainer"></div>
+
+  <!-- 전체 컨텐츠를 감싸는 wrapper -->
+  <div class="page-wrapper">
+    <!-- 메인 컨텐츠 -->
+    <div class="main-content">
+      <div class="container-fluid">
+        <!-- 검색 및 필터링 -->
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">고객 관리</h5>
+            <div class="d-flex gap-2">
+              <div class="input-group" style="width: auto;">
+                <select class="form-select" id="searchType">
+                  <option value="all">전체</option>
+                  <option value="username">아이디</option>
+                  <option value="name">이름</option>
+                  <option value="email">이메일</option>
+                </select>
+                <input type="text" class="form-control" id="searchInput" placeholder="검색어를 입력하세요">
+              </div>
+              <button class="btn btn-primary" id="addCustomerBtn">
+                <i class="fas fa-plus"></i> 고객 추가
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th class="sortable" data-sort="id">ID <i class="fas fa-sort"></i></th>
+                    <th class="sortable" data-sort="username">아이디 <i class="fas fa-sort"></i></th>
+                    <th class="sortable" data-sort="name">이름 <i class="fas fa-sort"></i></th>
+                    <th class="sortable" data-sort="email">이메일 <i class="fas fa-sort"></i></th>
+                    <th>관리</th>
+                  </tr>
+                </thead>
+                <tbody id="customerTableBody">
+                  <!-- 고객 데이터는 JavaScript로 동적 추가됨 -->
+                </tbody>
+              </table>
+            </div>
+            <!-- 페이지네이션 -->
+            <nav>
+              <ul class="pagination justify-content-center" id="pagination">
+                <!-- 페이지네이션은 JavaScript로 동적 추가됨 -->
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 고객 추가 모달 -->
+  <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addModalLabel">새 고객 추가</h5>
+          <button type="button" class="btn-close" onclick="cancelAdd()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="addUsername" class="form-label">아이디 *</label>
+            <input type="text" class="form-control" id="addUsername" oninput="checkUsernameReal(this.value)">
+            <div id="usernameCheck" class="form-text"></div>
+          </div>
+          <div class="mb-3">
+            <label for="addPassword" class="form-label">비밀번호 *</label>
+            <input type="password" class="form-control" id="addPassword">
+          </div>
+          <div class="mb-3">
+            <label for="addName" class="form-label">이름 *</label>
+            <input type="text" class="form-control" id="addName">
+          </div>
+          <div class="mb-3">
+            <label for="addEmail" class="form-label">이메일 *</label>
+            <input type="email" class="form-control" id="addEmail" oninput="checkEmailReal(this.value)">
+            <div id="emailCheck" class="form-text"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="cancelAdd()">취소</button>
+          <button type="button" class="btn btn-primary" onclick="addCustomer()">추가</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 예약 확인 모달 수정 -->
+  <div class="modal fade" id="reservationModal" tabindex="-1" aria-labelledby="reservationModalLabel">
+    <div class="modal-dialog modal-dialog-centered modal-xl"> <!-- modal-lg에서 modal-xl로 변경 -->
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title" id="reservationModalLabel"></h5>
+        </div>
+        <div class=" modal-body p-4">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="text-center" style="width: 10%">객실 호수</th>
+                  <th class="text-center" style="width: 10%">객실 타입</th>
+                  <th class="text-center" style="width: 18%">체크인</th>
+                  <th class="text-center" style="width: 18%">체크아웃</th>
+                  <th class="text-center" style="width: 24%">예약일시</th>
+                  <th class="text-center" style="width: 20%">관리</th>
+                </tr>
+              </thead>
+              <tbody id="reservationTableBody">
+              </tbody>
+            </table>
+            <div id="noReservationMessage" class="text-center py-4 text-muted d-none">
+              <i class="fas fa-calendar-times fa-2x mb-3"></i>
+              <p class="mb-0">예약 내역이 없습니다.</p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeReservationModal()"
+            data-bs-dismiss="modal">닫기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 예약 수정 모달 수정 -->
+  <div class="modal fade" id="editReservationModal" tabindex="-1" aria-labelledby="editReservationModalLabel">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">예약 수정</h5>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="editReservationId">
+          <div class="mb-3">
+            <label class="form-label">객실 선택</label>
+            <select class="form-select" id="editRoomSelect">
+              <option value="">객실을 선택해주세요</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">체크인 날짜</label>
+            <input type="date" class="form-control" id="editCheckinDate">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">체크아웃 날짜</label>
+            <input type="date" class="form-control" id="editCheckoutDate">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+          <button type="button" class="btn btn-primary" onclick="updateReservation()">수정</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 고객 수정 모달 -->
+  <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel">고객 정보 수정</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="editId">
+          <div class="mb-3">
+            <label for="editUsername" class="form-label">아이디</label>
+            <input type="text" class="form-control" id="editUsername" readonly>
+          </div>
+          <div class="mb-3">
+            <label for="editName" class="form-label">이름 *</label>
+            <input type="text" class="form-control" id="editName">
+          </div>
+          <div class="mb-3">
+            <label for="editEmail" class="form-label">이메일 *</label>
+            <input type="email" class="form-control" id="editEmail" oninput="checkEditEmailReal(this.value)">
+            <div id="editEmailCheck" class="form-text"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+          <button type="button" class="btn btn-primary" onclick="updateCustomer()">수정</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/static/js/customerManagement.js"></script>
+</body>
+
+</html>
