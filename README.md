@@ -89,6 +89,9 @@ src/
    - **비밀번호**: `1234`
 
 #### 3. 프로젝트 빌드 및 실행
+   mvn clean package
+   java -jar target/customer-1.0-SNAPSHOT.jar
+   
 #### 4. 웹 브라우저에서 접속: `http://localhost:8080`
 
 ## 주요 클래스 설명
