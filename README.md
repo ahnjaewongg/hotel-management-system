@@ -1,4 +1,4 @@
-# CRM (Customer Relationship Management) 시스템
+# Hotel Management System (호텔 관리 시스템)
 
 ## 프로젝트 개요
 이 프로젝트는 호텔 관리를 위한 CRM 시스템으로, 객실 관리, 고객 관리, 예약 관리 등의 기능을 제공합니다. Jakarta Servlet API와 Tomcat을 사용하여 웹 애플리케이션으로 구현되었습니다.
